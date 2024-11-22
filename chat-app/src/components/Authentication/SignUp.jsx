@@ -13,19 +13,19 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 const SignUp = () => {
-  const [Name, setName] = useState("");
-  const [Email, setEmail] = useState("");
-  const [ConfirmPassword, setConfirmPassword] = useState("");
-  const [Password, setPassword] = useState("");
-  const [Picture, setPicture] = useState(null);
-  const [Show, setShow] = useState(false);
-  const [Loading, setLoading] = useState(false);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [password, setPassword] = useState("");
+  const [picture, setPicture] = useState(null);
+  const [show, setShow] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
   const toast = useToast();
 
   const handleClick = () => {
-    setShow(!Show);
+    setShow(!show);
   };
 
   // ------------------Post Details------------------------------
@@ -54,9 +54,9 @@ const SignUp = () => {
         .then((data) => {
           if (data.url) {
             setPicture(data.url); //.toString()
-            console.log("Picture: ", data.url); // .toString()
+            //console.log("Picture: ", data.url); // .toString()
           } else {
-            console.log("Failed to retrieve URL form response: ", data);
+            console.log("Failed to retrieve URL from response: ", data);
           }
           setLoading(false);
         })
@@ -79,9 +79,9 @@ const SignUp = () => {
 
   // ---------------Submit Handler-----------------------
   const submitHandler = async () => {
-    console.log(Name, Email, Password, ConfirmPassword);
+    // console.log(name, email, password, confirmPassword);
     setLoading(true);
-    if (!Name || !Email || !Password || !ConfirmPassword) {
+    if (!name || !email || !password || !confirmPassword) {
       toast({
         title: "Please fill all the fields!",
         status: "warning",
@@ -92,7 +92,7 @@ const SignUp = () => {
       setLoading(false);
       return;
     }
-    if (Password !== ConfirmPassword) {
+    if (password !== confirmPassword) {
       toast({
         title: "Password does not match!",
         status: "warning",
@@ -111,10 +111,10 @@ const SignUp = () => {
       const { data } = await axios.post(
         "http://localhost:5000/user",
         {
-          name: Name,
-          email: Email,
-          password: Password,
-          pic: Picture,
+          name: name,
+          email: email,
+          password: password,
+          pic: picture,
         },
         config
       );
@@ -163,13 +163,13 @@ const SignUp = () => {
         <FormLabel>Password</FormLabel>
         <InputGroup>
           <Input
-            type={Show ? "text" : "password"}
+            type={show ? "text" : "password"}
             placeholder="Choose Password"
             onChange={(e) => setPassword(e.target.value)}
           />
           <InputRightElement width="4.5rem">
             <Button size={"xs"} onClick={handleClick}>
-              {Show ? "Hide" : "Show"}
+              {show ? "Hide" : "Show"}
             </Button>
           </InputRightElement>
         </InputGroup>
@@ -177,7 +177,7 @@ const SignUp = () => {
       <FormControl id="confirm-password" isRequired>
         <FormLabel>Confirm Password</FormLabel>
         <Input
-          type={Show ? "text" : "password"}
+          type={show ? "text" : "password"}
           placeholder="Confirm Your Password"
           onChange={(e) => setConfirmPassword(e.target.value)}
         />
@@ -198,7 +198,7 @@ const SignUp = () => {
         width="100%"
         style={{ marginTop: 15 }}
         onClick={submitHandler}
-        isLoading={Loading}
+        isLoading={loading}
       >
         Sign Up
       </Button>

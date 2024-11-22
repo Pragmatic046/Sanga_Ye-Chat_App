@@ -53,7 +53,7 @@ const SideDrawer = () => {
   const handleSearch = async () => {
     if (!search) {
       toast({
-        title: "Please Enter something in search",
+        title: "Please enter something in search",
         status: "warning",
         duration: 3000,
         isClosable: true,
@@ -69,16 +69,18 @@ const SideDrawer = () => {
           Authorization: `Bearer ${user.token}`,
         },
       };
-      const { data } = await axios.get(`http://localhost:3000//users?search=${search}`, config);
+      const { data } = await axios.get(
+        `http://localhost:5000/user?search=${search}`,
+        config
+      );
       setLoading(false);
       setSearchResult(data);
-      console.log(data);
     } catch (error) {
       toast({
-        title: "Error Occured!",
-        description: "Failed to Load the Search Results",
+        title: "Error occurred",
+        description: "Failed to load the search results",
         status: "error",
-        duration: 5000,
+        duration: 3000,
         isClosable: true,
         position: "bottom-left",
       });
@@ -86,7 +88,6 @@ const SideDrawer = () => {
   };
   // ------------------------------------------------------------
   const accessChat = async (userId) => {
-    console.log(userId);
     try {
       setLoadingChat(true);
       const config = {
@@ -95,8 +96,12 @@ const SideDrawer = () => {
           Authorization: `Bearer ${user.token}`,
         },
       };
-      const { data } = await axios.post(`http://localhost:3000/chat`, { userId }, config);
-      console.log(data);
+      const { data } = await axios.post(
+        `http://localhost:5000/chat`,
+        { userId },
+        config
+      );
+      // console.log(data);
       if (!chats.find((c) => c._id === data._id)) setChats([data, ...chats]);
       setSelectedChat(data);
       setLoadingChat(false);
@@ -124,16 +129,22 @@ const SideDrawer = () => {
         w="100%"
         p="5px 10px"
         borderWidth="5px"
-        height="50px" // Limit the box height to 50px
+        height="40px" // Limit the box height to 50px
       >
         {/* Left: Search Button */}
-        <Tooltip label="Search Users to chat" hasArrow placement="bottom-end">
-          <Button variant="ghost" onClick={onOpen}>
+        <Tooltip
+          fontSize={"10px"}
+          label="Search users to chat"
+          hasArrow
+          placement="bottom-end"
+        >
+          <Button height={"15px"} variant="ghost" onClick={onOpen}>
             <i className="fa-solid fa-magnifying-glass"></i>
             <Text
-              fontFamily={"berlin sans fb"}
+              fontSize={"15px"}
+              fontFamily={""}
               display={{ base: "none", md: "flex" }}
-              px="4"
+              px="3"
             >
               Search user
             </Text>
@@ -141,7 +152,7 @@ const SideDrawer = () => {
         </Tooltip>
 
         {/* Center: App Name */}
-        <Text fontSize="2xl" fontFamily="berlin sans fb" textAlign="center">
+        <Text fontSize="2xl" fontFamily="" textAlign="center">
           Chat-Talk
         </Text>
 
@@ -155,8 +166,14 @@ const SideDrawer = () => {
             {/* <MenuList></MenuList> */}
 
             {/* User Profile Icon */}
-            <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
+            <MenuButton
+              height={"30px"}
+              as={Button}
+              rightIcon={<ChevronDownIcon />}
+            >
               <Avatar
+                w={"30px"}
+                h={"30px"}
                 size="sm"
                 cursor="pointer"
                 name={user.name}
@@ -181,23 +198,27 @@ const SideDrawer = () => {
             <Box d="flex" p={2}>
               <Input
                 placeholder="Search by name or email"
+                size={"sm"}
+                w={"80%"}
                 mr={2}
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
               />
-              <Button onClick={handleSearch}>Go</Button>
+              <Button size={"sm"} onClick={handleSearch}>Go</Button>
             </Box>
             {loading ? (
               <ChatLoading />
             ) : (
               // console.log(searchResult.name)
-              searchResult && Array.isArray(searchResult) && searchResult?.map((user) => {
+              searchResult &&
+              Array.isArray(searchResult) &&
+              searchResult.map((user) => (
                 <UserListItem
                   key={user._id}
                   user={user}
                   handleFunction={() => accessChat(user._id)}
-                />;
-              })
+                />
+              ))
             )}
             {loadingChat && <Spinner ml={"auto"} d={"flex"} />}
           </DrawerBody>

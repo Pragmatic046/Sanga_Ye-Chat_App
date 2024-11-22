@@ -61,7 +61,7 @@ const allUsers = asyncHandler(async (req, res) => {
 
     };
     const users = await User.find(keyword).find({ _id: { $ne: req.user._id } })
-    res.status(200).json(users)
+    res.status(200).send(users)
 })
 
 

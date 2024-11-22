@@ -2,7 +2,6 @@ import { useDisclosure } from "@chakra-ui/hooks";
 import { ViewIcon } from "@chakra-ui/icons";
 import {
   Button,
-  Center,
   IconButton,
   Image,
   Modal,
@@ -53,9 +52,11 @@ const ProfileModal = ({ user, children }) => {
           >
             <Image
               borderRadius="full"
+              borderColor={"gray"}
               boxSize="100px"
-              src={user.pic}
+              src={user.pic ||`http://localhost:5000/images/anon.jpg`}
               alt={user.name}
+              fontSize={"10px"}
               mb={4}
             />
             <Text

@@ -7,7 +7,7 @@ const accessChat = asyncHandler(async (req, res) => {
     const { userId } = req.body
 
     if (!userId) {
-        console.log("UserID param not sent with request")
+        // console.log("UserID param not sent with request")
         return res.sendStatus(400)
     }
     var isChat = await Chat.find({
@@ -18,7 +18,7 @@ const accessChat = asyncHandler(async (req, res) => {
         ]
     }).populate("users", "-password").populate("latestMessage")
 
-    isChat = await UserActivation.populate(isChat, {
+    isChat = await User.populate(isChat, {
         path: "latestMessage.sender",
         select: "name pic email"
     })
@@ -57,7 +57,6 @@ const fetchChats = asyncHandler(async (req, res) => {
                 })
                 res.status(200).send(results)
             })
-        res.status(200).send(results)
     } catch (error) {
         res.status(400).send(error.message)
 
@@ -70,7 +69,7 @@ const createGroupChat = (async (req, res) => {
         return res.status(400).send({ message: "Please fill all the fields" })
     }
 
-    var useers = JSON.parse(req.body.users)
+    var users = JSON.parse(req.body.users)
     if (users.length < 2) {
         return res
             .status(400)
