@@ -8,6 +8,7 @@ import chatRoutes from "./routes/chatRoutes.js"
 import messageRoutes from './routes/messageRoutes.js';
 import path from "path"
 import { fileURLToPath } from 'url';
+import { Server } from 'socket.io';
 
 dotenv.config();
 
@@ -19,7 +20,7 @@ connectDB()
 const app = express();
 app.use(cors(
     { allowedHeaders: ['Content-Type', 'Authorization'], } // Allow necessary headers (optional)
-)) //{origin: "http://localhost:5173"}
+)) //{origin: "http://localhost:3000"}
 
 app.use(express.json()) // to accept JSON
 app.use(express.static(path.join(process.cwd(), 'server', 'public')));
@@ -40,7 +41,44 @@ app.use(errorHandler)
 
 const PORT = process.env.PORT || 5001; //port number 
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
     console.log(`Click It: --> http://localhost:${PORT}`.yellow.bold.underline)
 })
 
+const io = new Server(server, {
+    pingTimeout: 60000,
+    cors: {
+        origin: "http://localhost:3000"
+    }
+})
+
+io.on("connection", (socket) => {
+    console.log("connected to socket.io")
+
+    socket.on('setup', (userData) => {
+        socket.join(userData._id)
+        // console.log(userData._id)
+        socket.emit('connected')
+    })
+    // --------------------------------------------------------------------------
+    socket.on("join chat", (room) => {
+        socket.join(room)
+        console.log("User Joined Room: " + room)
+    })
+    // --------------------------------------------------------------------------
+    socket.on("typing", (room) => {
+        socket.in(room).emit("typing")
+    })
+    socket.on("stop typing", (room) => {
+        socket.in(room).emit("stop typing")
+    })
+    // --------------------------------------------------------------------------
+    socket.on("new message", (newMessageReceived) => {
+        var chat = newMessageReceived.chat;
+        if (!chat.users) return console.log("chat.users not defined")
+        chat.users.forEach(user => {
+            if (user._id === newMessageReceived.sender._id) return;
+            socket.in(user._id).emit("message received", newMessageReceived)
+        })
+    })
+})

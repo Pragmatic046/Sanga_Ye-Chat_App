@@ -32,7 +32,7 @@ const GroupChatModal = ({ children }) => {
   const toast = useToast();
 
   const { user, chats, setChats } = ChatState();
-
+  //--------------------------------------------------------------------------------
   const handleSearch = async (query) => {
     setSearch(query);
     if (!query) {
@@ -62,6 +62,7 @@ const GroupChatModal = ({ children }) => {
       });
     }
   };
+  //---------------------------------------------------------------------------------
   const handleSubmit = async () => {
     if (!groupChatName || !selectedUsers) {
       toast({
@@ -79,14 +80,15 @@ const GroupChatModal = ({ children }) => {
           Authorization: `Bearer ${user.token}`,
         },
       };
-      const { data } = await axios.get(
+      const { data } = await axios.post(
         `http://localhost:5000/chat/group`,
         {
           name: groupChatName,
-          users: JSON.string(selectedUsers.map((u) => u._id)),
+          users: JSON.stringify(selectedUsers.map((u) => u._id)),
         },
         config
       );
+      console.log(data);
       setChats([data, ...chats]);
       onClose();
       toast({
@@ -99,7 +101,7 @@ const GroupChatModal = ({ children }) => {
     } catch (error) {
       toast({
         title: "Failed to create the group chat",
-        description: error.response.data,
+        description: error.message || "Something went wrong!",
         status: "error",
         duration: 3000,
         isClosable: true,
@@ -107,6 +109,7 @@ const GroupChatModal = ({ children }) => {
       });
     }
   };
+  // ---------------------------------------------------------------------------------
   const handleGroup = (userToAdd) => {
     if (selectedUsers.includes(userToAdd)) {
       toast({
@@ -131,20 +134,19 @@ const GroupChatModal = ({ children }) => {
         <ModalOverlay />
         <ModalContent>
           <ModalHeader
-            fontSize={"20px"}
-            fontFamily={""}
-            color={"blue"}
-            d={"flex"}
-            justifyContent={"center"}
+            fontSize="20px"
+            fontFamily=""
+            d="flex"
+            justifyContent="center"
           >
             Create Group
           </ModalHeader>
           <ModalCloseButton />
-          <ModalBody d="flex" flexDir={"column"} alignItems={"center"}>
+          <ModalBody d="flex" flexDir="column" alignItems="center">
             <FormControl>
               <Input
                 placeholder="Give your chat a name"
-                fontSize={"12px"}
+                fontSize="12px"
                 mb={3}
                 onChange={(e) => setGroupChatName(e.target.value)}
               />
@@ -152,22 +154,36 @@ const GroupChatModal = ({ children }) => {
             <FormControl>
               <Input
                 placeholder="Add Users (eg: John, Jane)"
-                fontSize={"12px"}
+                fontSize="12px"
                 mb={1}
                 onChange={(e) => handleSearch(e.target.value)}
               />
             </FormControl>
-            <Box w={"100%"} d={"flex"} flexWrap={"wrap"}>
+            <Box
+              d="flex"
+              justifyContent="flex-start"
+              alignItems="center"
+            >
               {selectedUsers.map((u) => (
                 <UserBadgeItem
-                  key={user._id}
+                  key={u._id}
                   user={u}
                   handleFunction={() => handleDelete(u)}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    padding: "5px 10px",
+                    border: "1px solid #ccc",
+                    borderRadius: "20px",
+                    backgroundColor: "#e0f7fa",
+                    cursor: "pointer",
+                  }}
                 />
               ))}
             </Box>
+
             {loading ? (
-              <Spinner color="blue" my={"10px"} d={"flex"} />
+              <Spinner color="blue" my="10px" d="flex" />
             ) : (
               searchResult
                 ?.slice(0, 4)

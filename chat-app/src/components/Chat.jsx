@@ -1,5 +1,5 @@
 import { ChatState } from "../Context/ChatProvider";
-import { Box } from "@chakra-ui/react";
+import { Box, Flex } from "@chakra-ui/react";
 import SideDrawer from "./Miscellaneous/SideDrawer";
 import MyChats from "./Miscellaneous/MyChats";
 import ChatBox from "./Miscellaneous/ChatBox";
@@ -13,16 +13,27 @@ function Chat() {
     <>
       <div style={{ width: "100%" }}>
         {user && <SideDrawer />}
-        <Box
-          d="flex"
-          justifyContent="space-between"
-          w="100%"
+      
+        <Flex
           h="91.5vh"
-          p="10px"
+          gap={1} // Adds space between MyChats and ChatBox
         >
-          {user && <MyChats fetchAgain={fetchAgain} />}
-          {user && <ChatBox fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />}
-        </Box>
+
+          {/* ---------------MY-CHATS------------------ */}
+          {user && (
+            <Box flex={1} d="flex" w="" h="91.5vh" p="5px">
+              <MyChats fetchAgain={fetchAgain} />
+            </Box>
+          )}
+
+          {/* ---------------CHAT BOX------------------ */}
+          {user && (
+            <Box d="flex" flex={2} w="" h="91.5vh" p="5px">
+              <ChatBox fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
+            </Box>
+          )}
+
+        </Flex>
       </div>
     </>
   );
