@@ -12,6 +12,7 @@ import {
   ModalHeader,
   ModalOverlay,
   Text,
+  Tooltip,
 } from "@chakra-ui/react";
 
 const ProfileModal = ({ user, children }) => {
@@ -22,12 +23,9 @@ const ProfileModal = ({ user, children }) => {
       {children ? (
         <span onClick={onOpen}>{children}</span>
       ) : (
-        <IconButton
-          d={{ base: "flex" }}
-          icon={<ViewIcon />}
-          onClick={onOpen}
-        ></IconButton>
+        <IconButton d={{ base: "flex" }} icon={<ViewIcon />} onClick={onOpen} />
       )}
+
       <Modal size="sm" isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent
@@ -36,11 +34,7 @@ const ProfileModal = ({ user, children }) => {
           justifyContent="center"
           height={"380px"}
         >
-          <ModalHeader
-            fontSize="30px"
-            fontFamily="berlin sans fb"
-            textAlign="center"
-          >
+          <ModalHeader fontSize="22px" fontFamily="roboto" textAlign="center">
             {user.name}
           </ModalHeader>
           <ModalCloseButton />
@@ -54,21 +48,21 @@ const ProfileModal = ({ user, children }) => {
               borderRadius="full"
               borderColor={"gray"}
               boxSize="100px"
-              src={user.pic ||`http://localhost:5000/images/anon.jpg`}
+              src={user.pic || `http://localhost:5000/images/anon.jpg`}
               alt={user.name}
               fontSize={"10px"}
               mb={4}
             />
             <Text
-              fontSize={{ base: "15px", md: "25px" }}
-              fontFamily="berlin sans fb"
+              fontSize={{ base: "12px", md: "15px" }}
+              fontFamily="roboto"
               textAlign="center"
             >
-              Email: {user.email}
+              {user.email}
             </Text>
           </ModalBody>
           <ModalFooter display="flex" justifyContent="center">
-            <Button colorScheme="blue" mr={3} onClick={onClose}>
+            <Button fontFamily="roboto" fontSize="15px" colorScheme="blue" mr={3} onClick={onClose}>
               Close
             </Button>
           </ModalFooter>

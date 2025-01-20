@@ -19,7 +19,7 @@ const ChatModel = mongoose.Schema({
     },
     groupAdmin: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "User"
+        ref: "User",
     }
 }, {
     timestamps: true

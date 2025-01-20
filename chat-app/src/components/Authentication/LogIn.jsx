@@ -66,8 +66,8 @@ const Login = () => {
       });
       setUser(data);
       localStorage.setItem("userInfo", JSON.stringify(data));
-      setLoading(false);
       navigate("/chats");
+      setLoading(false);
     } catch (error) {
       // console.log(error.message);
       toast({
@@ -115,7 +115,7 @@ const Login = () => {
         style={{ marginTop: 15 }}
         onClick={submitHandler}
       >
-        Login In
+        Log In
       </Button>
       <Button
         variant="solid"

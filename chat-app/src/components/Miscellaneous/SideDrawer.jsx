@@ -28,6 +28,9 @@ import axios from "axios";
 import ChatLoading from "./ChatLoading.jsx";
 import UserListItem from "../UserAvatar/UserListItem.jsx";
 import { Spinner } from "@chakra-ui/spinner";
+import { getSender } from "../../config/chatsLogics.js";
+import { Effect } from "react-notification-badge";
+import NotificationBadge from "react-notification-badge";
 
 const SideDrawer = () => {
   const [search, setSearch] = useState("");
@@ -37,7 +40,14 @@ const SideDrawer = () => {
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const { user, setSelectedChat, chats, setChats } = ChatState();
+  const {
+    user,
+    setSelectedChat,
+    chats,
+    setChats,
+    setNotification,
+    notification,
+  } = ChatState();
   const navigate = useNavigate();
 
   const toast = useToast();
@@ -130,10 +140,12 @@ const SideDrawer = () => {
         p="5px 10px"
         borderWidth="5px"
         height="40px" // Limit the box height to 50px
+        fontFamily="roboto"
       >
         {/* Left: Search Button */}
         <Tooltip
-          fontSize={"10px"}
+          fontSize="10px"
+          fontFamily="roboto"
           label="Search users to chat"
           hasArrow
           placement="bottom-end"
@@ -141,8 +153,8 @@ const SideDrawer = () => {
           <Button height={"15px"} variant="ghost" onClick={onOpen}>
             <i className="fa-solid fa-magnifying-glass"></i>
             <Text
-              fontSize={"15px"}
-              fontFamily={""}
+              fontSize="10px"
+              fontFamily="roboto"
               display={{ base: "none", md: "flex" }}
               px="3"
             >
@@ -152,8 +164,13 @@ const SideDrawer = () => {
         </Tooltip>
 
         {/* Center: App Name */}
-        <Text fontSize="2xl" fontFamily="" textAlign="center">
-          Chat-Talk
+        <Text
+          fontSize="28px"
+          fontFamily="roboto"
+          fontWeight="700"
+          textAlign="center"
+        >
+          Sanga-Ye
         </Text>
 
         {/* Right: Menu with Profile and Notifications */}
@@ -161,26 +178,56 @@ const SideDrawer = () => {
           <Menu>
             {/* Notification Icon */}
             <MenuButton p={1}>
-              <BellIcon fontSize="2xl" m={1} />
-            </MenuButton>
-            {/* <MenuList></MenuList> */}
-
-            {/* User Profile Icon */}
-            <MenuButton
-              height={"30px"}
-              as={Button}
-              rightIcon={<ChevronDownIcon />}
-            >
-              <Avatar
-                w={"30px"}
-                h={"30px"}
-                size="sm"
-                cursor="pointer"
-                name={user.name}
-                src={user.pic}
+              <NotificationBadge
+                count={notification.length}
+                effect={Effect.SCALE}
               />
+              <BellIcon fontSize="15px" m={1} />
             </MenuButton>
-            <MenuList>
+            <MenuList pl={2}>
+              {!notification.length && "No new messages"}
+              {notification.map((notify) => (
+                <MenuItem
+                  key={notify._id}
+                  onClick={() => {
+                    setSelectedChat(notify.chat);
+                    setNotification(notification.filter((n) => n !== notify));
+                  }}
+                  fontFamily="roboto"
+                  fontSize="10px"
+                >
+                  {notify.chat.isGroupChat
+                    ? `New message in ${notify.chat.chatName}`
+                    : `New message from ${getSender(user, notify.chat.users)}`}
+                </MenuItem>
+              ))}
+            </MenuList>
+          </Menu>
+          <Menu>
+            {/* User Profile Icon */}
+            <Tooltip
+              fontSize="10px"
+              fontFamily="roboto"
+              label="Profile"
+              hasArrow
+              placement="bottom"
+            >
+              <MenuButton
+                height={"30px"}
+                as={Button}
+                rightIcon={<ChevronDownIcon />}
+              >
+                <Avatar
+                  w={"30px"}
+                  h={"30px"}
+                  size="sm"
+                  cursor="pointer"
+                  name={user.name}
+                  src={user.pic}
+                />
+              </MenuButton>
+            </Tooltip>
+            <MenuList fontFamily="roboto" fontSize="15px">
               <ProfileModal user={user}>
                 <MenuItem>My Profile</MenuItem>
               </ProfileModal>
@@ -204,7 +251,9 @@ const SideDrawer = () => {
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
               />
-              <Button size={"sm"} onClick={handleSearch}>Go</Button>
+              <Button size={"sm"} onClick={handleSearch}>
+                Go
+              </Button>
             </Box>
             {loading ? (
               <ChatLoading />

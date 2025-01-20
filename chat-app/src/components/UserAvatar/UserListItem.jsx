@@ -23,7 +23,7 @@ const UserListItem = ({ user, handleFunction }) => {
   borderRadius="lg"
 >
   <Box display="flex" flexDirection="column" width="50%">
-    <Text fontSize="25px">{user.name}</Text>
+    <Text fontSize="20px">{user.name}</Text>
     <Text fontSize="10px">
       {/* <b>Email: </b> */}
       <b>{user.email}</b>

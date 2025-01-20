@@ -134,8 +134,8 @@ const GroupChatModal = ({ children }) => {
         <ModalOverlay />
         <ModalContent>
           <ModalHeader
-            fontSize="20px"
-            fontFamily=""
+            fontSize="15px"
+            fontFamily="roboto"
             d="flex"
             justifyContent="center"
           >
@@ -154,16 +154,13 @@ const GroupChatModal = ({ children }) => {
             <FormControl>
               <Input
                 placeholder="Add Users (eg: John, Jane)"
+                fontFamily="roboto"
                 fontSize="12px"
                 mb={1}
                 onChange={(e) => handleSearch(e.target.value)}
               />
             </FormControl>
-            <Box
-              d="flex"
-              justifyContent="flex-start"
-              alignItems="center"
-            >
+            <Box d="flex" justifyContent="flex-start" alignItems="center">
               {selectedUsers.map((u) => (
                 <UserBadgeItem
                   key={u._id}
@@ -198,7 +195,7 @@ const GroupChatModal = ({ children }) => {
           </ModalBody>
           <ModalFooter>
             <Button
-              fontSize={"15px"}
+              fontSize="15px"
               colorScheme="blue"
               mr={3}
               onClick={handleSubmit}

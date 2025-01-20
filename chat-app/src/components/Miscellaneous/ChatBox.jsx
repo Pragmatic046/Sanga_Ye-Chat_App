@@ -13,6 +13,8 @@ const ChatBox = ({ fetchAgain, setFetchAgain }) => {
       padding="10px"
       overflowY="hidden" // Prevent scrollbars unless necessary
       boxShadow="md"
+      height="100%"
+      fontFamily="roboto"
     >
       <SingleChat fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
     </Box>

@@ -5,7 +5,6 @@ import {
   FormControl,
   IconButton,
   Input,
-  position,
   Text,
   useToast,
 } from "@chakra-ui/react";
@@ -17,6 +16,9 @@ import axios from "axios";
 import "../components/Styles.css";
 import ScrollableChat from "./ScrollableChat.jsx";
 import io from "socket.io-client";
+import { Player } from "@lottiefiles/react-lottie-player";
+import animationData from "../animations/typing.json";
+import MyChats from "./Miscellaneous/MyChats.jsx";
 
 const ENDPOINT = "http://localhost:5000";
 var socket, selectedChatCompare;
@@ -25,10 +27,12 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [newMessage, setNewMessage] = useState("");
-  const { user, selectedChat, setSelectedChat } = ChatState();
   const [socketConnected, setSocketConnected] = useState(false);
   const [typing, setTyping] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
+
+  const { user, selectedChat, setSelectedChat, setNotification, notification } =
+    ChatState();
 
   const toast = useToast();
 
@@ -131,6 +135,10 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
         selectedChatCompare._id !== newMessageReceived.chat._id
       ) {
         // give notification
+        if (!notification.includes(newMessageReceived)) {
+          setNotification([newMessageReceived, ...notification]);
+          setFetchAgain(!fetchAgain);
+        }
       } else {
         setMessages([...messages, newMessageReceived]);
       }
@@ -165,23 +173,46 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
       {selectedChat ? (
         <>
           <Text
-            fontSize={{ base: "20px", md: "25px" }}
+            fontSize={{ base: "16px", md: "20px" }}
             pb={3}
             px={2}
             w="100%"
-            fontFamily="Work sans"
-            d="flex"
-            justifyContent={{ base: "space-between" }}
+            fontFamily="roboto"
+            display="flex"
+            justifyContent="space-between"
             alignItems="center"
           >
             <IconButton
-              d={{ base: "flex", md: "none" }}
+              display={{ base: "flex", md: "none" }}
               icon={<ArrowBackIcon />}
-              onClick={() => setSelectedChat("")}
+              onClick={() => setSelectedChat(null)}
             />
+
             {!selectedChat.isGroupChat ? (
               <>
-                {getSender(user, selectedChat.users)}
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                  }}
+                >
+                  {getSender(user, selectedChat.users)}
+                  <div className="anime-space">
+                    {isTyping ? (
+                      <div className="anime">
+                        <Player
+                          autoplay
+                          loop
+                          src={animationData}
+                          style={{ width: 30 }}
+                        />
+                      </div>
+                    ) : (
+                      <></>
+                    )}
+                  </div>
+                </div>
                 <ProfileModal user={getSenderFull(user, selectedChat.users)} />
               </>
             ) : (
@@ -199,17 +230,16 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
             className={
               messages.length === 0 ? "chatbox-empty" : "chatbox-filled"
             }
-            d={"flex"}
-            flexDir={"column"}
-            justifyContent={"flex-end"}
-            p={3}
+            display="flex"
+            flexDirection="column"
+            justifyContent="flex-end"
+            p={1}
             bg={"#e8e8e8"}
-            // h={messages.length === 0 ? "90vh" : "100%"}
-            h="78vh"
-            borderRadius={"lg"}
-            overflow={"hidden"}
+            h="75vh"
+            borderRadius="lg"
+            overflow="hidden"
+            width="100%"
           >
-            {/* Messages Here */}
             {loading ? (
               <Spinner
                 size="xl"
@@ -219,39 +249,49 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                 margin="auto"
               />
             ) : (
-              <div className="messages" >
+              <div className="messages">
                 <ScrollableChat messages={messages} />
               </div>
             )}
-            <FormControl onKeyDown={sendMessage}>
-              {isTyping ? <div>Loading...</div> : <></>}
+            <FormControl
+              onKeyDown={sendMessage}
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                width: { base: "85vw", md: "100%", lg: "50vw" }, // Adjust conditionally for screen size
+              }}
+            >
               <Input
                 variant="filled"
                 bg="#e0e0e0"
                 placeholder="Type your message here..."
                 onChange={typingHandler}
                 value={newMessage}
+                display="flex"
+                flexDir="column"
+                fontFamily="roboto"
+                fontSize="15px"
+                width="100%"
               />
             </FormControl>
-            {/* Messages above*/}
           </Box>
         </>
       ) : (
-        <Box 
-  display="flex" 
-  alignItems="center" 
-  justifyContent="center" 
-  h="87vh"
->
-  <Text
-    fontSize="lg"
-    color="gray.500"
-    textAlign="center"
-  >
-    Click on a user to start conversation
-  </Text>
-</Box>
-
+        <Box
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          h="87vh"
+        >
+          <Text
+            fontWeight="100"
+            fontSize="lg"
+            color="gray.500"
+            textAlign="center"
+          >
+            Click on a user to start conversation
+          </Text>
+        </Box>
       )}
     </>
   );

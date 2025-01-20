@@ -217,8 +217,8 @@ const UpdateGroupChatModal = ({ fetchMessages, fetchAgain, setFetchAgain }) => {
         <ModalOverlay />
         <ModalContent>
           <ModalHeader
-            fontSize="35px"
-            fontFamily="Work sans"
+            fontFamily="roboto"
+            fontSize="15px"
             d="flex"
             justifyContent="center"
           >
@@ -226,7 +226,12 @@ const UpdateGroupChatModal = ({ fetchMessages, fetchAgain, setFetchAgain }) => {
           </ModalHeader>
 
           <ModalCloseButton />
-          <ModalBody d="flex" flexDir="column" alignItems="center">
+          <ModalBody
+            fontFamily="roboto"
+            d="flex"
+            flexDir="column"
+            alignItems="center"
+          >
             <Box w="100%" d="flex" flexWrap="wrap" pb={3}>
               {selectedChat.users.map((u) => (
                 <UserBadgeItem
@@ -239,6 +244,8 @@ const UpdateGroupChatModal = ({ fetchMessages, fetchAgain, setFetchAgain }) => {
             </Box>
             <FormControl d="flex">
               <Input
+                fontFamily="roboto"
+                fontSize="12px"
                 placeholder="Chat Name"
                 mb={3}
                 value={groupChatName}
@@ -247,6 +254,8 @@ const UpdateGroupChatModal = ({ fetchMessages, fetchAgain, setFetchAgain }) => {
             </FormControl>
             <FormControl>
               <Input
+                fontFamily="roboto"
+                fontSize="12px"
                 placeholder="Add User to group"
                 mb={1}
                 onChange={(e) => handleSearch(e.target.value)}
@@ -266,17 +275,24 @@ const UpdateGroupChatModal = ({ fetchMessages, fetchAgain, setFetchAgain }) => {
             )}
           </ModalBody>
           <ModalFooter>
-              <Button
-                variant="solid"
-                colorScheme="teal"
-                ml={1}
-                m={2}
-                isLoading={renameloading}
-                onClick={handleRename}
-              >
-                Update
-              </Button>
-            <Button onClick={() => handleRemove(user)} colorScheme="red">
+            <Button
+              fontSize="15px"
+              fontFamily="roboto"
+              variant="solid"
+              colorScheme="teal"
+              ml={1}
+              m={2}
+              isLoading={renameloading}
+              onClick={handleRename}
+            >
+              Update
+            </Button>
+            <Button
+              fontSize="15px"
+              fontFamily="roboto"
+              onClick={() => handleRemove(user)}
+              colorScheme="red"
+            >
               Leave Group
             </Button>
           </ModalFooter>
